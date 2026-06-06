@@ -7,16 +7,15 @@
  
 ## Problem summary
  
-Windows 10 cannot complete the upgrade to Windows 11, throwing the error: **"We can't tell if your PC has enough storage to continue installing Windows 11."** The error is misleading — the root cause is a corrupted Boot Configuration Data (BCD) file, not a storage issue.
+Windows 10 cannot complete the upgrade to Windows 11, throwing the error: **"We can't tell if your PC has enough storage to continue installing Windows 11."** The error was misleading as the root cause was a corrupted Boot Configuration Data (BCD) file, not a storage issue.
  
 ---
  
 ## Environment
  
 - **OS / Platform**: Windows 10 (upgrading to Windows 11)
-- **Hardware** (if relevant): Client PC
+- **Hardware**: Client PC
 - **Software / App** (if relevant): Windows Update, Windows 11 Media Creation Tool, RUFUS
-- **Network context** (if relevant): N/A
 ---
  
 ## Symptoms
@@ -50,19 +49,19 @@ The Windows setup error log at `C:\$WINDOWS.~BT\Sources\Panther\setuperr.log` co
 BCD: File is not system store.
 ```
  
-This points to a corrupted or missing BCD (Boot Configuration Data) file. Running the following command in an Administrator Command Prompt confirmed the diagnosis — instead of returning a list of boot entries, it returned an error:
+This points to a corrupted or missing BCD (Boot Configuration Data) file. Running the following command in an Administrator Command Prompt confirmed the diagnosis, instead of returning a list of boot entries, it returned an error:
  
 ```
 bcdedit /enum all
 ```
  
-The BCD needed to be fully rebuilt.
+This meant that the BCD needed to be fully rebuilt.
  
 ---
  
 ## Resolution
  
-**Requirement:** A Windows 11 bootable USB drive. The Media Creation Tool can create one, but in this case it produced a corrupted bootloader. [RUFUS](https://rufus.ie) (a free utility for creating bootable USB drives) was used instead and worked reliably.
+**Requirement:** A Windows 11 bootable USB drive. The Media Creation Tool from Microsoft's Download page can create one, but in my case it produced a corrupted bootloader that caused an endless reboot loop. [RUFUS](https://rufus.ie) (a free utility for creating bootable USB drives) was used instead and worked.
  
 ### Step 1 — Boot from the USB
  
@@ -105,11 +104,10 @@ Remove the USB drive, boot Windows normally, and attempt the upgrade again.
 - **Difficulty**: Medium — straightforward fix, but diagnosing the BCD as the cause behind a misleading storage error message takes time
 ---
  
-## Notes & caveats
+## Notes
  
-- The error message ("storage") is a red herring — don't let it send you down the wrong path. Always check the setup error log first.
-- The Windows 11 Media Creation Tool produced a corrupted bootloader in this case. RUFUS is a more reliable alternative.
-- The `setuperr.log` file (`C:\$WINDOWS.~BT\Sources\Panther\setuperr.log`) is invaluable for diagnosing upgrade failures — check it early before trying generic fixes.
+- The Windows 11 Media Creation Tool produced a corrupted bootloader in this case. RUFUS was a more reliable alternative.
+- The `setuperr.log` file (`C:\$WINDOWS.~BT\Sources\Panther\setuperr.log`) is invaluable for diagnosing upgrade failure.
 - This fix requires a bootable Windows USB drive, so have one ready or factor in time to create one.
 ---
  
