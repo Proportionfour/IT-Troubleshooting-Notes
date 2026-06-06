@@ -22,4 +22,4 @@ Each file uses this structure:
 ## Disclaimer
 
 These are real-world notes, not official documentation. Your environment may
-differ — use your judgment before applying any fix.
+be different use your judgment before applying any fix.
